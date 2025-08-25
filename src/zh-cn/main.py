@@ -2,6 +2,7 @@ import requests
 import cv2
 import numpy as np
 import time
+import math
 import HANDTRACKINGMODULE as HTM
 from ContorlComputer import control_computer
 
@@ -58,15 +59,16 @@ class HandGestureController:
         """检测手指状态"""
         fingers = []
 
+        wrist = landmarks[0]
         # 检测拇指（比较x坐标）
-        if landmarks[self.tip_ids[0]][1] > landmarks[self.tip_ids[0] - 1][1]:
+        if math.fabs(landmarks[self.tip_ids[0]][1] - wrist[1]) > math.fabs(landmarks[self.tip_ids[0] - 2][1] - wrist[1]):
             fingers.append(1)  # 拇指伸直
         else:
             fingers.append(0)  # 拇指弯曲
 
         # 检测其他四指（比较y坐标）
         for Id in range(1, 5):
-            if landmarks[self.tip_ids[Id]][2] < landmarks[self.tip_ids[Id] - 2][2]:
+            if math.fabs(landmarks[self.tip_ids[Id]][2] - wrist[2]) > math.fabs(landmarks[self.tip_ids[Id] - 2][2] - wrist[2]):
                 fingers.append(1)  # 手指伸直
             else:
                 fingers.append(0)  # 手指弯曲
@@ -126,6 +128,7 @@ class HandGestureController:
                         try:
                             # 解码图像
                             img = cv2.imdecode(np.frombuffer(jpg_data, dtype=np.uint8), cv2.IMREAD_COLOR)
+                            img = cv2.flip(img, 0)
                             if img is not None:
                                 # 处理帧
                                 processed_img = self.process_frame(img)

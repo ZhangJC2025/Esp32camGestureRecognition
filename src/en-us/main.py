@@ -2,6 +2,7 @@ import requests
 import cv2
 import numpy as np
 import time
+import math
 import HANDTRACKINGMODULE as HTM
 from ContorlComputer import control_computer
 
@@ -58,8 +59,10 @@ class HandGestureController:
         """Detect finger states"""
         fingers = []
 
+        wrist = landmarks[0]
+
         # Detect thumb (compare x-coordinates)
-        if landmarks[self.tip_ids[0]][1] > landmarks[self.tip_ids[0] - 1][1]:
+        if math.fabs(landmarks[self.tip_ids[0]][1] - wrist[1]) > math.fabs(landmarks[self.tip_ids[0] - 2][1] - wrist[1]):
             fingers.append(1)  # Thumb extended
         else:
             fingers.append(0)  # Thumb bent
@@ -126,6 +129,7 @@ class HandGestureController:
                         try:
                             # Decode image
                             img = cv2.imdecode(np.frombuffer(jpg_data, dtype=np.uint8), cv2.IMREAD_COLOR)
+                            img = cv2.flip(img, 0)
                             if img is not None:
                                 # Process frame
                                 processed_img = self.process_frame(img)
