@@ -26,10 +26,10 @@ The computer can be controlled by gesture recognition, such as giving the comput
 ```
 .
 ├── hand-landmarks.png # Schematic diagram of the numbering of each joint in mediapipe
-├── LICENSE
-├── README.md
-├── requirements.txt
-└── src
+├── LICENSE # License File
+├── README.md # Documentation
+├── requirements.txt # Python Dependencies
+└── src # Source Code
     ├── ContorlComputer.py # Computer control instructions implemented
     ├── HANDTRACKINGMODULE.py # Gesture recognition model
     └── main.py # Main program, responsible for communicating with esp32cam and recognizing specific gestures
